@@ -173,6 +173,7 @@ class get_full_page:
                     )
                     if package_manager == "apt":
                         os.system("sudo apt install {}".format(full_path_driver))
+                        os.system("sudo apt install chromium-chromedriver")
                     elif package_manager == "yum":
                         os.system("rpm -ivh {}".format(full_path_driver))
                     print("安装完成,请重新启动")
