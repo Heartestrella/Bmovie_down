@@ -139,71 +139,82 @@ class get_full_page:
     def get_page(self, driver: str):
         from selenium import webdriver
 
-        if driver == "Edge":
-            self.driver = webdriver.Edge()
-        elif driver == "Chrome":
-            from selenium.webdriver.chrome.options import Options
-            from selenium.webdriver.chrome.service import Service
-
-            options = Options()
-            options.add_argument("--headless")
-            options.binary_location = self.google_chrome
-            self.driver = webdriver.Chrome(
-                options=options, service=Service(self.chromedriver)
-            )
+        if driver == "requests":
+            resp = requests.get(url=self.url, headers=self.config["headers"])
+            if resp.status_code == 200:
+                page_content = resp.text
+                return page_content
+            else:
+                raise ConnectionError("无法获取到页面，请检查网络")
         else:
-            RuntimeError("未知的浏览器")
-        self.driver.get(self.url)
-        for i in range(10):
-            self.driver.execute_script("window.scrollBy(0, 1000);")
-            time.sleep(3)
+            if driver == "Edge":
+                self.driver = webdriver.Edge()
+            elif driver == "Chrome":
+                from selenium.webdriver.chrome.options import Options
+                from selenium.webdriver.chrome.service import Service
 
-        page_content = self.driver.page_source
-        self.driver.quit()
+                options = Options()
+                options.add_argument("--headless")
+                options.binary_location = self.google_chrome
+                self.chromedriver = os.path.join(os.getcwd(), "driver", "chromedriver")
+                self.driver = webdriver.Chrome(
+                    options=options, service=Service(self.chromedriver)
+                )
+            else:
+                RuntimeError("未知的浏览器")
+            self.driver.get(self.url)
+            for i in range(10):
+                self.driver.execute_script("window.scrollBy(0, 1000);")
+                time.sleep(3)
 
-        return page_content
+            page_content = self.driver.page_source
+            self.driver.quit()
+
+            return page_content
 
     def main(self, config) -> str:
         if platform.system() == "Windows":
             return self.get_page("Edge")
-
+        self.config = config
         if platform.system() == "Linux":
             if config["use_webdriver"]:
-                print("将在Linux上使用Webdriver模拟请求")
-                # try:
-                self.google_chrome = self.whereis("google-chrome")
-                self.chromedriver = self.whereis("chromedriver")
-                if (
-                    "not found" not in self.google_chrome
-                    and "not found" not in self.chromedriver
-                ):
-                    return self.get_page("Chrome")
-                else:
-                    print(
-                        "尝试自动安装，若安装失败，请参考：https://github.com/Heartestrella/Downlaod-movie 安装方法"
-                    )
-                    package_manager = self.get_package_manager()
-                    full_path_driver = os.path.join(
-                        os.getcwd(), "driver", "google-chrome-stable_current_amd64.deb"
-                    )
-                    if package_manager == "apt":
-                        os.system(
-                            "sudo apt install {} -y --allow-downgrades".format(
-                                full_path_driver
-                            )
+                machine = platform.machine()
+                if machine == "x86_64":
+                    print("将在Linux上使用Webdriver模拟请求")
+                    # try:
+                    self.google_chrome = self.whereis("google-chrome")
+                    # self.chromedriver = self.whereis("chromedriver")
+                    if (
+                        "not found"
+                        not in self.google_chrome
+                        # and "not found" not in self.chromedriver
+                    ):
+                        return self.get_page("Chrome")
+                    else:
+                        print(
+                            "尝试自动安装，若安装失败，请参考：https://github.com/Heartestrella/Downlaod-movie 安装方法"
                         )
-                        os.system("sudo apt install chromium-chromedriver -y")
-                    elif package_manager == "yum":
-                        RuntimeError("请手动安装Chrome，Yum包管理器暂不支持自动安装")
-                    print("安装完成,请重新启动")
-                    exit()
-                # except FileNotFoundError:
-            #     if "command not found" in output:
-
-            else:
-                resp = requests.get(url=self.url, headers=config["headers"])
-                if resp.status_code == 200:
-                    page_content = resp.text
-                    return page_content
+                        package_manager = self.get_package_manager()
+                        full_path_driver = os.path.join(
+                            os.getcwd(),
+                            "driver",
+                            "google-chrome-stable_current_amd64.deb",
+                        )
+                        if package_manager == "apt":
+                            os.system(
+                                "sudo apt install {} -y  --allow-downgrades".format(
+                                    full_path_driver
+                                )
+                            )
+                        elif package_manager == "yum":
+                            os.system(
+                                "sudo yum localinstall  {} -y ".format(full_path_driver)
+                            )
+                        print("安装完成,请重新启动")
+                        exit()
                 else:
-                    raise RuntimeError("无法获取到页面，请检查网络")
+                    print("非X86架构不支持Webdriver模拟请求")
+                    print("继续使用requests请求,获取的页面受限")
+                    return self.get_page("requests")
+            else:
+                return self.get_page("requests")
