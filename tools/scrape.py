@@ -1,5 +1,6 @@
 import os
 import platform
+import shutil
 import subprocess
 import time
 
@@ -113,22 +114,27 @@ class get_full_page:
         self.url = url
 
     def get_package_manager(self):
-        try:
-            subprocess.run(
-                ["apt"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True
-            )
-            return "apt"
-        except FileNotFoundError:
-            pass
-        try:
-            subprocess.run(
-                ["yum"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True
-            )
-            return "yum"
-        except FileNotFoundError:
-            pass
+        package_managers = ["apt", "yum"]
 
+        for package_manager in package_managers:
+            try:
+                # 尝试执行命令并捕获标准输出
+                result = subprocess.run(
+                    [package_manager, "--version"], capture_output=True, text=True
+                )
+
+                if result.returncode == 0:
+                    return package_manager
+            except FileNotFoundError:
+                pass
         return "Unknown package manager"
+
+    def whereis(self, program) -> str:
+        path = shutil.which(program)
+        if path:
+            return path
+        else:
+            return f"{program} not found"
 
     def get_page(self, driver: str):
         from selenium import webdriver
@@ -136,9 +142,15 @@ class get_full_page:
         if driver == "Edge":
             self.driver = webdriver.Edge()
         elif driver == "Chrome":
-            options = webdriver.ChromeOptions()
-            options.add_argument('--headless')
-            self.driver = webdriver.Chrome(options=options)
+            from selenium.webdriver.chrome.options import Options
+            from selenium.webdriver.chrome.service import Service
+
+            options = Options()
+            options.add_argument("--headless")
+            options.binary_location = self.google_chrome
+            self.driver = webdriver.Chrome(
+                options=options, service=Service(self.chromedriver)
+            )
         else:
             RuntimeError("未知的浏览器")
         self.driver.get(self.url)
@@ -158,10 +170,13 @@ class get_full_page:
         if platform.system() == "Linux":
             if config["use_webdriver"]:
                 print("将在Linux上使用Webdriver模拟请求")
-                #try:
-                output  = subprocess.run("chromedriver --version", shell=True, capture_output=True, text=True).stdout
-                print(output)
-                if "command not found" not in output:
+                # try:
+                self.google_chrome = self.whereis("google-chrome")
+                self.chromedriver = self.whereis("chromedriver")
+                if (
+                    "not found" not in self.google_chrome
+                    and "not found" not in self.chromedriver
+                ):
                     return self.get_page("Chrome")
                 else:
                     print(
@@ -172,16 +187,19 @@ class get_full_page:
                         os.getcwd(), "driver", "google-chrome-stable_current_amd64.deb"
                     )
                     if package_manager == "apt":
-                        os.system("sudo apt install {}".format(full_path_driver))
-                        os.system("sudo apt install chromium-chromedriver")
+                        os.system(
+                            "sudo apt install {} -y   --allow-downgrades.".format(
+                                full_path_driver
+                            )
+                        )
+                        os.system("sudo apt install chromium-chromedriver -y")
                     elif package_manager == "yum":
-                        os.system("rpm -ivh {}".format(full_path_driver))
+                        RuntimeError("请手动安装Chrome，Yum包管理器暂不支持自动安装")
                     print("安装完成,请重新启动")
-                #except FileNotFoundError:
-               #     if "command not found" in output:
-                        
+                    exit()
+                # except FileNotFoundError:
+            #     if "command not found" in output:
 
-                    
             else:
                 resp = requests.get(url=self.url, headers=config["headers"])
                 if resp.status_code == 200:
