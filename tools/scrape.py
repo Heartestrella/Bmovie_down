@@ -157,6 +157,7 @@ class get_full_page:
                 options.add_argument("--headless")
                 options.binary_location = self.google_chrome
                 self.chromedriver = os.path.join(os.getcwd(), "driver", "chromedriver")
+                os.system("sudo chmod +x {}".format(self.chromedriver))
                 self.driver = webdriver.Chrome(
                     options=options, service=Service(self.chromedriver)
                 )
@@ -183,11 +184,13 @@ class get_full_page:
                     print("将在Linux上使用Webdriver模拟请求")
                     # try:
                     self.google_chrome = self.whereis("google-chrome")
-                    # self.chromedriver = self.whereis("chromedriver")
+                    result = subprocess.run(
+                        ["google-chrome", "--version"], capture_output=True, text=True
+                    ).stdout
+                    print(result)
                     if (
-                        "not found"
-                        not in self.google_chrome
-                        # and "not found" not in self.chromedriver
+                        "not found" not in self.google_chrome
+                        and "99.0.4844.51" in result
                     ):
                         return self.get_page("Chrome")
                     else:
