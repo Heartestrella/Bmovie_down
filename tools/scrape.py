@@ -188,7 +188,7 @@ class get_full_page:
                     )
                     if package_manager == "apt":
                         os.system(
-                            "sudo apt install {} -y   --allow-downgrades.".format(
+                            "sudo apt install {} -y --allow-downgrades".format(
                                 full_path_driver
                             )
                         )
