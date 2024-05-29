@@ -19,7 +19,7 @@ Bilibili Video: https://www.bilibili.com/video/BV1Aw4m127m9
    - 执行 pip3 install -r packages.txt 安装依赖
    - 执行 `python bilibili_movie_scraper.py` 来运行脚本。
    - 脚本会自动从哔哩哔哩上爬取高评分的电影信息。
-   - Linux armv7l 和 Windwos10以上 amd64可以到发行页下载可执行文件
+   - Linux amd64 和 Windwos10以上 amd64可以到发行页下载可执行文件，其余版本请运行脚本
 3. **下载电影：**
 
    - 爬取完电影信息后，脚本会展示高评分电影列表。
@@ -51,7 +51,7 @@ Copy code
 - BeautifulSoup
 - tqdm
 - requests
-- selenium（仅适用于 Windows）
+- selenium（已支持Linux amd64）
 
 ## 注意事项
 
@@ -73,17 +73,21 @@ Copy code
 
 1.部分影片可能存在要付费购买的问题导致只有6分钟
 
-2.其余版本性问题可以查看分支
+2.问题可以查看分支
 
 ## 更新
 
 Version 1.3.0:
 1. 支持扫码自动获取Cookie
+2. 支持自定义获取电影CD的功能
+   
+Version 1.4.0:
+1. 添加了对Linux的Selenium模拟请求支持
 
 ![ae5959b7845ae7493d9a85626cc09cc](https://github.com/Heartestrella/Downlaod-movie/assets/110215026/6389a435-a1d6-42e9-91e1-051b27a5d0dd)
 
 
-2. 支持自定义获取电影CD的功能
+
 
 ## 感谢
 
