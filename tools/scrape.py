@@ -160,6 +160,7 @@ class get_full_page:
                 options.add_argument("--headless")
                 options.binary_location = self.google_chrome
                 self.chromedriver = os.path.join(os.getcwd(), "driver", "chromedriver")
+                os.system("sudo chmod +x {}".format(self.chromedriver))
                 self.driver = webdriver.Chrome(
                     options=options, service=Service(self.chromedriver)
                 )
