@@ -7,6 +7,8 @@ import time
 import requests
 from bs4 import BeautifulSoup
 
+from .download import Download
+
 
 class BilibiliMovieScraper:
     def __init__(self, url, config):
@@ -112,6 +114,7 @@ class BilibiliMovieScraper:
 class get_full_page:
     def __init__(self, url) -> None:
         self.url = url
+        self.download = Download()
 
     def get_package_manager(self):
         package_managers = ["apt", "yum"]
@@ -181,24 +184,19 @@ class get_full_page:
                 machine = platform.machine()
                 if machine == "x86_64":
                     print("将在Linux上使用Webdriver模拟请求")
-                    # try:
                     self.google_chrome = self.whereis("google-chrome")
-                    # self.chromedriver = self.whereis("chromedriver")
-                    if (
-                        "not found"
-                        not in self.google_chrome
-                        # and "not found" not in self.chromedriver
-                    ):
+                    if "not found" not in self.google_chrome:
                         return self.get_page("Chrome")
                     else:
                         print(
                             "尝试自动安装，若安装失败，请参考：https://github.com/Heartestrella/Downlaod-movie 安装方法"
                         )
+                        self.download.start()
                         package_manager = self.get_package_manager()
                         full_path_driver = os.path.join(
                             os.getcwd(),
                             "driver",
-                            "google-chrome-stable_current_amd64.deb",
+                            "chrome",
                         )
                         if package_manager == "apt":
                             os.system(
@@ -207,9 +205,7 @@ class get_full_page:
                                 )
                             )
                         elif package_manager == "yum":
-                            os.system(
-                                "sudo yum localinstall  {} -y ".format(full_path_driver)
-                            )
+                            os.system("sudo rpm -i  {} -y ".format(full_path_driver))
                         print("安装完成,请重新启动")
                         exit()
                 else:
