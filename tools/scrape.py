@@ -192,8 +192,8 @@ class get_full_page:
                         print(
                             "尝试自动安装，若安装失败，请参考：https://github.com/Heartestrella/Downlaod-movie 安装方法"
                         )
-                        self.download.start()
                         package_manager = self.get_package_manager()
+                        suffix = self.download.start(package_manager)
                         full_path_driver = os.path.join(
                             os.getcwd(),
                             "driver",
@@ -201,12 +201,12 @@ class get_full_page:
                         )
                         if package_manager == "apt":
                             os.system(
-                                "sudo apt install {} -y  --allow-downgrades".format(
-                                    full_path_driver
+                                "sudo apt install {}.{} -y  --allow-downgrades".format(
+                                    full_path_driver,suffix
                                 )
                             )
                         elif package_manager == "yum":
-                            os.system("sudo rpm -i  {} -y ".format(full_path_driver))
+                            os.system("sudo rpm -i  {}.{} -y ".format(full_path_driver,suffix))
                         print("安装完成,请重新启动")
                         exit()
                 else:

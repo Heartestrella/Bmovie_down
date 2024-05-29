@@ -22,7 +22,7 @@ class Download:
                     f.write(data)
                     pbar.update(len(data))
 
-    def start(self, manager: str):
+    def start(self, manager: str) -> str:
         print("开始下载Google Drvier Version 99")
         os.makedirs("driver", exist_ok=True)
         self.download_file(
@@ -33,5 +33,10 @@ class Download:
         elif manager == "yum":
             url = self.chrome_yum
         print("开始下载Google Chrome")
-        self.download_file(url, os.path.join(os.getcwd(), "driver", "chrome"))
+        if manager == "apt":
+            suffix = "deb"
+        elif manager == "yum":
+            suffix = "rpm"
+        self.download_file(url, os.path.join(os.getcwd(), "driver", f"chrome.{suffix}"))
         print("下载完成")
+        return suffix
