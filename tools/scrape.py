@@ -185,6 +185,14 @@ class get_full_page:
                 machine = platform.machine()
                 if machine == "x86_64":
                     print("将在Linux上使用Webdriver模拟请求")
+                    full_path_driver = os.path.join(
+                            os.getcwd(),
+                            "driver",
+                            "chrome",
+                        )
+                    package_manager = self.get_package_manager()
+                    if not (os.path.exists(full_path_driver) and os.path.isdir(full_path_driver)):
+                        suffix = self.download.start(package_manager)
                     self.google_chrome = self.whereis("google-chrome")
                     if "not found" not in self.google_chrome:
                         return self.get_page("Chrome")
@@ -192,13 +200,7 @@ class get_full_page:
                         print(
                             "尝试自动安装，若安装失败，请参考：https://github.com/Heartestrella/Downlaod-movie 安装方法"
                         )
-                        package_manager = self.get_package_manager()
-                        suffix = self.download.start(package_manager)
-                        full_path_driver = os.path.join(
-                            os.getcwd(),
-                            "driver",
-                            "chrome",
-                        )
+                        
                         if package_manager == "apt":
                             os.system(
                                 "sudo apt install {}.{} -y  --allow-downgrades".format(
