@@ -4,23 +4,26 @@ Bilibili Video: https://www.bilibili.com/video/BV1Aw4m127m9
 
 这个 Python 脚本可以帮助你从哔哩哔哩上爬取高评分的电影并进行下载。
 
+即将推出对于网易云音乐歌单的爬取
+
 ## 使用方法
 
 1. **配置：**
 
    - 在运行脚本之前，请确保配置好 `config.json` 文件：
-     - `sorce`: 下载电影的最低评分要求。
+     - `sorce`: 下载电影的最低评分要求。   （调为8下载所有）
      - `save_path`: 下载的电影保存路径。
      - `qn`: 视频质量（参考分辨率对照表）。
      - `chunk_size`: 下载数据块的大小。
      - `headers`: 请求所需的 HTTP 头部信息。
 
 2. **运行脚本：**
-   - 执行 pip3 install -r packages.txt 安装依赖
-   - 执行 `python bilibili_movie_scraper.py` 来运行脚本。
+   - `git clone https://github.com/Heartestrella/Bmovie_down.git`
+   - 执行 `pip3 install -r packages.txt` 安装依赖
+   - 执行 `python main.py` 来运行脚本。
    - 脚本会自动从哔哩哔哩上爬取高评分的电影信息。
    - Linux amd64 和 Windwos10以上 amd64可以到发行页下载可执行文件，其余版本请运行脚本
-3. **下载电影：**
+4. **下载电影：**
 
    - 爬取完电影信息后，脚本会展示高评分电影列表。
    - 输入 'Y' 或 'YES' 确认要下载的电影。
@@ -31,19 +34,25 @@ Bilibili Video: https://www.bilibili.com/video/BV1Aw4m127m9
 
 - 在下载时，可参考以下分辨率代码：
 {
+
 "240P 极速": 6,
+
 "360P 流畅": 16,
+
 "480P 清晰": 32,
+
 "720P 高清": 64,
+
 "720P60 高帧率": 74,
+
 "1080P 高清": 80,
+
 "1080P+ 高码率": 112,
+
 "1080P60 高帧率": 116,
+
 "4K 超清": 120
 }
-
-markdown
-Copy code
 
 ## 依赖项
 
@@ -55,9 +64,11 @@ Copy code
 
 ## 注意事项
 
-- 对于 Windows 系统，脚本使用 Selenium 模拟请求以获取更多内容。
-- Linux 系统目前不支持使用 Selenium。直接进行请求。
-
+- 建议修改配置文件中的use_webdriver为true(默认值)
+- 若您使用的机型为非Linux amd64，请调整为false
+- 需要在非64位的主机上获取更多电影可以设置config.json中的html_path，html文件会在支持的Windows平台上运行后生成
+- 切勿将multithreading调为true，否则下载的视频不完整(完全不能看)
+  
 ## 免责声明
 
 - 本脚本仅用于学习和研究目的。
@@ -73,7 +84,7 @@ Copy code
 
 1.部分影片可能存在要付费购买的问题导致只有6分钟
 
-2.问题可以查看分支
+2.其他问题可以查看分支
 
 ## 更新
 
@@ -84,8 +95,9 @@ Version 1.3.0:
 Version 1.4.0:
 1. 添加了对Linux的Selenium模拟请求支持
 
-![ae5959b7845ae7493d9a85626cc09cc](https://github.com/Heartestrella/Downlaod-movie/assets/110215026/6389a435-a1d6-42e9-91e1-051b27a5d0dd)
-
+Version 1.5.0:
+1. 添加了多线程下载(没法用)
+2. 修改了项目结构
 
 
 
