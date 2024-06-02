@@ -98,6 +98,7 @@ class BilibiliMovieScraper:
             print(f"分辨率: {self.config['qn']} 即将开始下载")
             return self.wait_download_moives
 
+
 class get_full_page:
     def __init__(self, url) -> None:
         self.url = url
@@ -173,18 +174,19 @@ class get_full_page:
                 if machine == "x86_64":
                     print("将在Linux上使用Webdriver模拟请求")
                     full_path_driver = os.path.join(
-                            os.getcwd(),
-                            "driver",
-                            "chrome",
-                        )
-<<<<<<< HEAD
-                    full_path = os.path.join(os.getcwd(),"driver")
+                        os.getcwd(),
+                        "driver",
+                        "chrome",
+                    )
+
+                    full_path = os.path.join(os.getcwd(), "driver")
                     package_manager = self.get_package_manager()
                     if not (os.path.exists(full_path) and os.path.isdir(full_path)):
-=======
-                    package_manager = self.get_package_manager()
-                    if not (os.path.exists(full_path_driver) and os.path.isdir(full_path_driver)):
->>>>>>> fcf1966bbba00e2c809438ebfd7373c4e1c03662
+                        package_manager = self.get_package_manager()
+                    if not (
+                        os.path.exists(full_path_driver)
+                        and os.path.isdir(full_path_driver)
+                    ):
                         suffix = self.download.start(package_manager)
                     self.google_chrome = self.whereis("google-chrome")
                     if "not found" not in self.google_chrome:
@@ -193,15 +195,19 @@ class get_full_page:
                         print(
                             "尝试自动安装，若安装失败，请参考：https://github.com/Heartestrella/Downlaod-movie 安装方法"
                         )
-                        
+
                         if package_manager == "apt":
                             os.system(
                                 "sudo apt install {}.{} -y  --allow-downgrades".format(
-                                    full_path_driver,suffix
+                                    full_path_driver, suffix
                                 )
                             )
                         elif package_manager == "yum":
-                            os.system("sudo rpm -i  {}.{} -y ".format(full_path_driver,suffix))
+                            os.system(
+                                "sudo rpm -i  {}.{} -y ".format(
+                                    full_path_driver, suffix
+                                )
+                            )
                         print("安装完成,请重新启动")
                         exit()
                 else:
