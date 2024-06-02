@@ -97,19 +97,6 @@ class BilibiliMovieScraper:
         if result == "Y" or result == "YES":
             print(f"分辨率: {self.config['qn']} 即将开始下载")
             return self.wait_download_moives
-            # downlaod = Downloader(self.config)
-            # for data in self.wait_download_moives:
-            #     for name, values in data.items():
-            #         match = re.search(r"/ep(\d+)", values[0])
-            #         if match:
-            #             target = match.group(1)
-            #             id = f"ep{target}"
-            #             if downlaod.get_epid_video(id, name):
-            #                 print(f"已经完成 {name}的下载 30s后自动下载")
-            #             # time.sleep(3)
-            #         else:
-            #             print("没匹配到id")
-
 
 class get_full_page:
     def __init__(self, url) -> None:
@@ -185,6 +172,15 @@ class get_full_page:
                 machine = platform.machine()
                 if machine == "x86_64":
                     print("将在Linux上使用Webdriver模拟请求")
+                    full_path_driver = os.path.join(
+                            os.getcwd(),
+                            "driver",
+                            "chrome",
+                        )
+                    full_path = os.path.join(os.getcwd(),"driver")
+                    package_manager = self.get_package_manager()
+                    if not (os.path.exists(full_path) and os.path.isdir(full_path)):
+                        suffix = self.download.start(package_manager)
                     self.google_chrome = self.whereis("google-chrome")
                     if "not found" not in self.google_chrome:
                         return self.get_page("Chrome")
@@ -192,13 +188,7 @@ class get_full_page:
                         print(
                             "尝试自动安装，若安装失败，请参考：https://github.com/Heartestrella/Downlaod-movie 安装方法"
                         )
-                        package_manager = self.get_package_manager()
-                        suffix = self.download.start(package_manager)
-                        full_path_driver = os.path.join(
-                            os.getcwd(),
-                            "driver",
-                            "chrome",
-                        )
+                        
                         if package_manager == "apt":
                             os.system(
                                 "sudo apt install {}.{} -y  --allow-downgrades".format(
