@@ -181,16 +181,13 @@ class get_full_page:
                         "driver",
                         "chrome",
                     )
-
+                    print(full_path_driver)
                     full_path = os.path.join(os.getcwd(), "driver")
                     package_manager = self.get_package_manager()
-                    if not (os.path.exists(full_path) and os.path.isdir(full_path)):
-                        package_manager = self.get_package_manager()
-                    if not (
-                        os.path.exists(full_path_driver)
-                        and os.path.isdir(full_path_driver)
-                    ):
+
+                    if not (os.path.exists(full_path_driver)):
                         suffix = self.download.start(package_manager)
+
                     self.google_chrome = self.whereis("google-chrome")
                     if "not found" not in self.google_chrome:
                         return self.get_page("Chrome")
