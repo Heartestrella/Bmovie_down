@@ -127,7 +127,10 @@ class get_full_page:
         else:
             return f"{program} not found"
 
-    def get_page(self, driver: str):
+    def get_page(
+        self,
+        driver: str = "Edge",
+    ):
         from selenium import webdriver
 
         if driver == "requests":
@@ -155,7 +158,7 @@ class get_full_page:
             else:
                 RuntimeError("未知的浏览器")
             self.driver.get(self.url)
-            for i in range(10):
+            for i in range(self.config["pages"]):
                 self.driver.execute_script("window.scrollBy(0, 1000);")
                 time.sleep(3)
 

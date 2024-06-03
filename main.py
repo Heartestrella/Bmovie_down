@@ -33,6 +33,7 @@ def load_config():
         "163_coolies": {},
         "use_webdriver": True,
         "multithreading": False,
+        "pages": 20,
     }
     config_file = "config.json"
 
